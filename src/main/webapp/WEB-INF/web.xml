@@ -6,7 +6,7 @@
   <display-name>spring最简框架</display-name>
    <context-param>
     <param-name>webAppRootKey</param-name>
-    <param-value>spring.root</param-value>
+    <param-value>quartz.root</param-value>
   </context-param>
   <listener>
     <listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>

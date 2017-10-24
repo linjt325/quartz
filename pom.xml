@@ -2,7 +2,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.lin</groupId>
-	<artifactId>spring-web-empty</artifactId>
+	<artifactId>quartz</artifactId>
 	<packaging>war</packaging>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>quartz Maven Webapp</name>
@@ -173,6 +173,6 @@
 		</dependency>
 	</dependencies>
 	<build>
-		<finalName>spring-web-empty</finalName>
+		<finalName>quartz</finalName>
 	</build>
 </project>
