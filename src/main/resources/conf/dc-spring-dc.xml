@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.1.xsd">
+	<!--数据中心接口管理 -->
+
+	<!-- 定义URI -->
+	<bean id="baseConnection" class="com.lihs.httpBase.util.http.BaseConnection">
+		<property name="jndiName">
+			<value>java:comp/env/dc_httpConnection</value>
+		</property>
+		<property name="httpConnectionFilters">
+			<list>
+				<!-- 在httpConnect发送数据中心数据之前添加用户数据 -->
+				<bean class="com.lihs.authority.interceptor.HttpConnectionAddUserFilter"></bean>
+				<!-- 在httpConnect发送数据中心数据之前添加用户数据 -->
+				<bean class="com.lihs.authority.interceptor.HttpConnectionAddSystemNameFilter">
+					<property name="systemName" value="water-scada" />
+				</bean>
+			</list>
+		</property>
+	</bean>
+	<!-- 获取实时数据 -->
+	 <bean id="getRealTimeDataByIdsAndEnnames" class="com.lihs.httpBase.util.http.HttpConnection" parent="baseConnection">
+    	<property name="path" value="/water-datacenter/dataTheme/realTimeData/realtime/getRTDataAndAlarmByIds"></property>
+    </bean>
+
+    <bean id="getRTDataByCidsCondition" class="com.lihs.httpBase.util.http.HttpConnection" parent="baseConnection">
+    	<property name="path" value="/water-datacenter/dataTheme/realTimeData/realtime/getRTDataByCidsCondition"></property>
+    </bean>
+
+    <bean id="getAttrDataChnameUnify" class="com.lihs.httpBase.util.http.HttpConnection" parent="baseConnection">
+   		<property name="path" value="/water-datacenter/dataTheme/deviceData/attributeData/getAttrDataChnameUnify"></property>
+    </bean>
+
+</beans>
