@@ -26,6 +26,7 @@
       <param-name>contextConfigLocation</param-name>
       <param-value>
 				classpath*:conf/spring*.xml,
+				classpath:spring_schedules.xml
 <!-- 				classpath*:spring-cache.xml -->
 			</param-value>
     </init-param>

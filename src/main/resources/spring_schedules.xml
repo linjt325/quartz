@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="
+	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+	http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd
+	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+
+
+	<!-- 要调用的工作类 -->
+	<bean id="jobClass" class="com.lin.quartz.schedule.Job"></bean>
+
+<bean id='jobService' class="com.lin.quartz.service.JobService"></bean>
+
+	<!-- 总管理类 如果将lazy-init='false'那么容器启动就会执行调度程序 -->
+	<bean id="startQuertz" lazy-init="false" autowire="no"
+		class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<list>
+				<ref bean="job1" />
+<!-- 				<ref bean="job1" /> -->
+<!-- 				<ref bean="job2" /> -->
+			</list>
+		</property>
+	</bean>
+
+	<bean id="job1"
+		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<ref bean="methodInvokingJobDetail"/>
+		</property>
+		<property name="cronExpression">
+			<value>* */1 * * * ?</value>
+		</property>
+	</bean>
+
+	<bean id="job2"
+		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<bean id='jobDetail2'
+				class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+				<property name="jobClass">
+					<value>com.lin.quartz.schedule.Job</value>
+				</property>
+				<property name="jobDataMap">
+					<bean class="org.quartz.JobDataMap">
+						<constructor-arg>
+							<map>
+								<entry key="simulatConfig" value="123123123"></entry>
+								<entry key="service" value-ref="jobService" ></entry>
+							</map>
+						</constructor-arg>
+					</bean>
+				</property>
+				<property name="durability" value="true" />
+			</bean>
+		</property>
+
+		<property name="cronExpression">
+			<value>0 */15 * * * ?</value>
+		</property>
+	</bean>
+	
+	<bean id="methodInvokingJobDetail"
+				class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+				
+<!-- 				设置jobDetail是否有状态  false时禁止并发-->
+				<property name="concurrent" value="false" ></property>
+				
+<!-- 	当方法为static 时 需要指定staticMethod 值为  全类名.方法名   -->
+<!-- 				<property name="staticMethod"> 
+ 				<value>com.lin.quartz.schedule.Job.executeWithStaticMethod</value> 
+ 				</property> -->
+
+<!-- 			方法为非静态方法时	 -->
+				<property name="targetObject">
+					<ref bean="jobClass" />
+				</property>
+				<property name="targetMethod">
+					<value>executeWithTargetMethod</value>
+				</property>
+<!-- 				传参,可以找到对应参数类型的方法, 支持重载 -->
+				<property name="arguments">
+					<list>
+					<!-- 用list 保存方法名, 执行所有方法 -->
+						<list>
+							<value>method1</value>
+<!-- 							<value>method2</value> -->
+<!-- 							<value>method3</value> -->
+						</list>	
+<!-- 						<value>1231</value> -->
+<!-- 						<ref bean="jobClass"/> -->
+					</list>
+				</property>
+			</bean>
+			
+
+</beans>
